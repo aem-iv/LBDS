@@ -1,0 +1,46 @@
+getwd()
+setwd("/Users/amartinez/Documents/CSULB/Service/LBDS/Data")
+
+df <- read.csv(file.choose())
+head(df)
+tail(df)
+# transpose of dataframe 
+transpose <- t(df)
+
+# converting the result to dataframe
+transpose <- as.data.frame(transpose)
+
+# calculating reverse of dataframe
+rev_df <- rev(transpose)
+
+# transpose of reverse dataframe 
+rev_df <- t(rev_df)
+
+# converting the result to dataframe
+rev_df <- as.data.frame(rev_df)
+
+head(df)
+
+df1 <- read.csv(file.choose())
+head(df1)
+# transpose of dataframe 
+transpose1 <- t(df1)
+
+# converting the result to dataframe
+transpose1 <- as.data.frame(transpose1)
+
+# calculating reverse of dataframe
+rev_df1 <- rev(transpose1)
+
+# transpose of reverse dataframe 
+rev_df1 <- t(rev_df1)
+
+# converting the result to dataframe
+rev_df1 <- as.data.frame(rev_df1)
+head(rev_df)
+head(rev_df1)
+
+# Merge two data sets into one ordered from 2019-2023
+cd <- rbind(rev_df1, rev_df)
+head(cd)
+tail(cd)
