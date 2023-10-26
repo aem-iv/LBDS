@@ -51,3 +51,40 @@ backup <- cd
 
 #Recode for just the year
 cd$YEAR <- as.integer(format(as.POSIXct(cd$REPDATETIME, format = "%m/%d/%Y %H:%M"), "%Y"))
+
+head(cd)
+summary(cd)
+cd$CHARGE <- as.factor(cd$CHARGE)
+cd$CHARGE_LITERAL <- as.factor(cd$CHARGE_LITERAL)
+cd$YEAR <- as.factor(cd$YEAR)
+cd$BEAT <- as.factor(cd$BEAT)
+cd$JUV_OFFENDER <- as.factor(cd$JUV_OFFENDER)
+summary(cd)
+str(cd)
+
+charges <- unique(cd$CHARGE_LITERAL)
+charges
+
+#####################
+# Recoding charge_literal crimes into broader categories
+# Create a function to categorize charges
+categorize_crime <- function(charge) {
+  if (charge %in% c(
+    
+  )) {
+    return("Crimes against Property")
+  } else if (charge %in% c(
+    "Grand Theft; Motor Vehicle", 
+  )) {
+    return("Crimes against Persons")
+  } else if (charge %in% c(
+    
+  )) {
+    return("Crimes against Public Order and Morals")
+  } else {
+    return("Other")
+  }
+}
+
+# Apply the function to create a new column
+df$crime_category <- sapply(df$Charge, categorize_crime)
