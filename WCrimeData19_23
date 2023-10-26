@@ -72,15 +72,15 @@ categorize_crime <- function(charge) {
   if (charge %in% c(
     
   )) {
-    return("Crimes against Property")
+    return("Violent Crimes")
   } else if (charge %in% c(
     "Grand Theft; Motor Vehicle", 
   )) {
-    return("Crimes against Persons")
+    return("Property Crimes")
   } else if (charge %in% c(
     
   )) {
-    return("Crimes against Public Order and Morals")
+    return("Traffic Violations and DUI")
   } else {
     return("Other")
   }
