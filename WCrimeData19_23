@@ -44,3 +44,10 @@ head(rev_df1)
 cd <- rbind(rev_df1, rev_df)
 head(cd)
 tail(cd)
+
+###############
+rm(df, df1, rev_df, rev_df1, transpose, transpose1)
+backup <- cd
+
+#Recode for just the year
+cd$YEAR <- as.integer(format(as.POSIXct(cd$REPDATETIME, format = "%m/%d/%Y %H:%M"), "%Y"))
