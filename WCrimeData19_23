@@ -64,27 +64,42 @@ str(cd)
 
 charges <- unique(cd$CHARGE_LITERAL)
 charges
-
 #####################
-# Recoding charge_literal crimes into broader categories
-# Create a function to categorize charges
-categorize_crime <- function(charge) {
-  if (charge %in% c(
-    
-  )) {
-    return("Violent Crimes")
-  } else if (charge %in% c(
-    "Grand Theft; Motor Vehicle", 
-  )) {
+
+
+# Function to categorize charges
+categorize_charges <- function(crime) {
+  # Convert charges to lowercase for case-insensitive matching
+  crime <- tolower(crime)
+  
+  # Check for keywords and assign categories
+  if (grepl("assault|injury|battery|murder|firearm|robbery|weapon|shoot|carjacking|threaten|kidnapping|abuse|cruelty|molest|rape|stab|threat|intimidation|inj", crime)) {
+    return("Violent Crime")
+  }
+  else if (grepl("property|burglar|vandalism|arson|trespass|graffiti|burglary", crime)) {
     return("Property Crimes")
-  } else if (charge %in% c(
-    
-  )) {
+  } 
+  else if (grepl("dui|percent|stolen|drive|accident|veh|impound|hit|run", crime)) {
     return("Traffic Violations and DUI")
-  } else {
+  } 
+  else if (grepl("drug|narc|narcotics|substance|sale|drgs|sell|distribution|trafficking|paraphernelia|marijuana|ecstacy|cocaine|crack|meth|heroine", crime)) {
+    return("Drug-Related Crime")
+  } 
+  else {
     return("Other")
   }
 }
 
-# Apply the function to create a new column
-df$crime_category <- sapply(df$Charge, categorize_crime)
+# Apply the categorize_charges function to the data frame
+cd$crime_cat <- sapply(cd$CHARGE_LITERAL, categorize_charges)
+head(cd, 40)
+
+cd$crime_cat <- as.factor(cd$crime_cat)
+summary(cd)
+
+cd[  cd$crime_cat == "Other",]
+
+
+
+
+
