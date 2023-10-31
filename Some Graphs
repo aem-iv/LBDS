@@ -1,0 +1,121 @@
+```{r}
+# Create a separate plot for each crime category
+crime_trend_plot <- ggplot(cd, aes(x = YEAR, fill = crime_cat)) +
+  geom_bar() +
+  labs(title = "Crime Trends Over the Years",
+       x = "Year",
+       y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "top") +
+  facet_grid(. ~ crime_cat)  
+
+# Print the plot
+print(crime_trend_plot)
+```
+
+```{r}
+# Create a line plot of crime trends over time
+cd <- cd %>%
+  mutate(Time = as.POSIXct(sub(".* ", "", REPDATETIME), format = "%H:%M"))
+
+crime_time_plot <- ggplot(cd, aes(x = Time, y = ..count.., color = crime_cat)) +
+  geom_freqpoly(binwidth = 1800) +  
+  labs(title = "Crime Trends Over Time",
+       x = "Time of Day",
+       y = "Count") +
+  scale_x_datetime(date_labels = "%H:%M") +
+  theme_minimal() +
+  theme(legend.position = "top")
+
+print(crime_time_plot)
+```
+
+```{r}
+# Create a bar plot to show types of crimes committed by juvenile offenders
+juvenile_data <- cd[cd$JUV_OFFENDER == "yes", ]
+
+
+juvenile_crime_plot <- ggplot(juvenile_data, aes(x = crime_cat)) +
+  geom_bar() +
+  labs(title = "Types of Crimes Committed by Juvenile Offenders",
+       x = "Crime Category",
+       y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  
+
+print(juvenile_crime_plot)
+```
+This code is giving me a single box under NA rather than seperating them by crime?? 
+
+```{r}
+# Create a line plot to show the trend of juvenile crimes throughout the years
+juvenile_data <- cd[cd$JUV_OFFENDER == "yes", ]
+
+juvenile_crime_trend_plot <- ggplot(juvenile_data, aes(x = YEAR)) +
+  geom_line(stat = "count") +
+  labs(title = "Trend of Juvenile Crimes Throughout the Years",
+       x = "Year",
+       y = "Count") +
+  theme_minimal()
+
+print(juvenile_crime_trend_plot)
+
+```
+This one has the same issue. I need to figure out how to relate the yes to the count
+
+```{r}
+# Group the data by year, street, and crime category and count the occurrences
+crime_counts <- cd %>%
+  group_by(YEAR, LOCATION, crime_cat) %>%
+  summarize(Count = n())
+
+# Filter for significant streets or any other relevant condition
+significant_streets <- crime_counts %>%
+  group_by(LOCATION) %>%
+  summarize(correlation = cor(YEAR, Count)) %>%
+  filter(abs(correlation) == max(abs(correlation)))
+
+plot_data <- crime_counts %>%
+  filter(LOCATION %in% significant_streets$LOCATION)
+
+ggplot(plot_data, aes(x = YEAR, y = Count, color = LOCATION)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "orange") +
+  geom_text(aes(label = LOCATION), color = "black", size = 2, hjust = 1) +
+  theme_minimal() +
+  labs(
+    title = "Crime Trends in Different Streets Over the Years",
+    x = "Year",
+    y = "Number of Crimes",
+  )
+
+```
+```{r}
+# Group the data by year, street, and crime category and count the occurrences
+crime_counts <- cd %>%
+  group_by(YEAR, LOCATION, crime_cat) %>%
+  summarize(Count = n())
+
+min_occurrences_threshold <- 100
+
+significant_streets <- crime_counts %>%
+  group_by(LOCATION) %>%
+  summarize(Count = sum(Count)) %>%
+  filter(Count >= min_occurrences_threshold)
+
+plot_data <- crime_counts %>%
+  filter(LOCATION %in% significant_streets$LOCATION)
+
+ggplot(plot_data, aes(x = YEAR, y = Count, color = LOCATION)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "orange") +
+  geom_text(aes(label = LOCATION), color = "black", size = 2, hjust = 1) +
+  theme_minimal() +
+  labs(
+    title = "Crime Trends in Different Streets Over the Years",
+    x = "Year",
+    y = "Number of Crimes",
+  )
+
+```
+The graphics for this looks terrible, find out how to edit it. 
